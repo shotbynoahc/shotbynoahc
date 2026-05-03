@@ -261,10 +261,16 @@ media.forEach((item, i) => {
     const previewEnd   = item.previewEnd   ?? null;
     const posterImg = document.createElement("img");
     posterImg.src = posterPath;
-    posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+    posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.4s ease;";
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
-    vid.addEventListener("seeked", () => posterImg.remove(), { once: true });
+    vid.addEventListener("seeked", () => {
+      // Wait two paint frames so the video frame is actually rendered before fading
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        posterImg.style.opacity = "0";
+        setTimeout(() => posterImg.remove(), 400);
+      }));
+    }, { once: true });
     vid.addEventListener("timeupdate", () => {
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
