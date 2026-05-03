@@ -259,15 +259,15 @@ media.forEach((item, i) => {
     vid.autoplay    = true;
     const previewStart = item.previewStart ?? 0;
     const previewEnd   = item.previewEnd   ?? null;
-    vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
-    vid.addEventListener("timeupdate", () => {
-      if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
-    });
-
     const posterImg = document.createElement("img");
     posterImg.src = posterPath;
     posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
-    vid.addEventListener("canplay", () => posterImg.remove(), { once: true });
+
+    vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
+    vid.addEventListener("seeked", () => posterImg.remove(), { once: true });
+    vid.addEventListener("timeupdate", () => {
+      if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
+    });
 
     card.style.position = "relative";
     card.appendChild(vid);
