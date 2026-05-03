@@ -103,7 +103,7 @@ body {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  background: #e8e8e8;
+  background: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 

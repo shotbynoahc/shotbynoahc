@@ -250,30 +250,23 @@ media.forEach((item, i) => {
 
   if (item.type === "video") {
     const videoPath = `videos/${item.folder}/${item.src}`;
-    const posterPath = `videos/${item.folder}/${item.src.replace(/\.[^.]+$/, '.png')}`;
     const previewStart = item.previewStart ?? 0;
     const previewEnd   = item.previewEnd   ?? null;
 
-    // Poster as CSS background — shows through the transparent video on all browsers
-    card.style.backgroundImage    = `url('${posterPath}')`;
-    card.style.backgroundSize     = "cover";
-    card.style.backgroundPosition = "center";
-
-    // Video starts invisible, fades in once confirmed playing at the right time
     const vid = document.createElement("video");
     vid.src         = videoPath;
     vid.muted       = true;
     vid.loop        = false;
     vid.playsInline = true;
     vid.autoplay    = true;
-    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;";
+    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;opacity:0;transition:opacity 0.5s ease;";
 
     let videoShown = false;
     const showVideo = () => {
       if (videoShown) return;
       videoShown = true;
       vid.style.display = "block";
-      requestAnimationFrame(() => { card.style.backgroundImage = ""; });
+      requestAnimationFrame(() => requestAnimationFrame(() => { vid.style.opacity = "1"; }));
     };
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
