@@ -253,7 +253,6 @@ media.forEach((item, i) => {
     const posterPath = `videos/${item.folder}/${item.src.replace(/\.[^.]+$/, '.png')}`;
     const vid = document.createElement("video");
     vid.src         = videoPath;
-    vid.poster      = posterPath;
     vid.muted       = true;
     vid.loop        = false;
     vid.playsInline = true;
@@ -264,7 +263,15 @@ media.forEach((item, i) => {
     vid.addEventListener("timeupdate", () => {
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
+
+    const posterImg = document.createElement("img");
+    posterImg.src = posterPath;
+    posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+    vid.addEventListener("canplay", () => posterImg.remove(), { once: true });
+
+    card.style.position = "relative";
     card.appendChild(vid);
+    card.appendChild(posterImg);
     card.addEventListener("click", () => openLightbox("video", videoPath, wrapper));
 
   } else if (item.type === "image") {
