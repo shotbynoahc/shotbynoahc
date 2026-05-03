@@ -1,6 +1,6 @@
 const media = [
   { type: "image", src: "DSC00331.JPG" },
-  { type: "video", src: "skybox1.mp4", previewStart: 3, previewEnd: 13 },
+  { type: "video", folder: "skybox", src: "skybox1.mp4", previewStart: 3, previewEnd: 13 },
 ];
 
 const scene         = document.querySelector(".scene");
@@ -249,8 +249,11 @@ media.forEach((item, i) => {
   card.className = "media-card";
 
   if (item.type === "video") {
+    const videoPath = `videos/${item.folder}/${item.src}`;
+    const posterPath = `videos/${item.folder}/${item.src.replace(/\.[^.]+$/, '.png')}`;
     const vid = document.createElement("video");
-    vid.src         = `videos/${item.src}`;
+    vid.src         = videoPath;
+    vid.poster      = posterPath;
     vid.muted       = true;
     vid.loop        = false;
     vid.playsInline = true;
@@ -262,7 +265,7 @@ media.forEach((item, i) => {
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
     card.appendChild(vid);
-    card.addEventListener("click", () => openLightbox("video", `videos/${item.src}`, wrapper));
+    card.addEventListener("click", () => openLightbox("video", videoPath, wrapper));
 
   } else if (item.type === "image") {
     const img = document.createElement("img");
@@ -474,7 +477,7 @@ function closeInfoPanel() {
 
   let mouseX = 0, mouseY = 0;
   let blobX  = 0, blobY  = 0;
-  const LERP = 0.28;
+  const LERP = 0.45;
 
   document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX;
