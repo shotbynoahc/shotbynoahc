@@ -251,37 +251,42 @@ media.forEach((item, i) => {
   if (item.type === "video") {
     const videoPath = `videos/${item.folder}/${item.src}`;
     const posterPath = `videos/${item.folder}/${item.src.replace(/\.[^.]+$/, '.png')}`;
+    const previewStart = item.previewStart ?? 0;
+    const previewEnd   = item.previewEnd   ?? null;
+
+    // Poster sits at the bottom, always visible while video loads
+    const posterImg = document.createElement("img");
+    posterImg.src = posterPath;
+    posterImg.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+
+    // Video starts invisible on top, fades in once confirmed playing at the right time
     const vid = document.createElement("video");
     vid.src         = videoPath;
     vid.muted       = true;
     vid.loop        = false;
     vid.playsInline = true;
     vid.autoplay    = true;
-    const previewStart = item.previewStart ?? 0;
-    const previewEnd   = item.previewEnd   ?? null;
-    const posterImg = document.createElement("img");
-    posterImg.src = posterPath;
-    posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.4s ease;";
+    vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.5s ease;";
 
-    let posterRemoved = false;
-    const removePoster = () => {
-      if (posterRemoved) return;
-      posterRemoved = true;
+    let videoShown = false;
+    const showVideo = () => {
+      if (videoShown) return;
+      videoShown = true;
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        posterImg.style.opacity = "0";
-        setTimeout(() => posterImg.remove(), 400);
+        vid.style.opacity = "1";
+        setTimeout(() => posterImg.remove(), 500);
       }));
     };
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
     vid.addEventListener("timeupdate", () => {
-      if (!vid.seeking && vid.currentTime >= previewStart) removePoster();
+      if (!vid.seeking && vid.currentTime >= previewStart) showVideo();
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
 
     card.style.position = "relative";
-    card.appendChild(vid);
     card.appendChild(posterImg);
+    card.appendChild(vid);
     card.addEventListener("click", () => openLightbox("video", videoPath, wrapper));
 
   } else if (item.type === "image") {
