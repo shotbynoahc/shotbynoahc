@@ -263,15 +263,19 @@ media.forEach((item, i) => {
     posterImg.src = posterPath;
     posterImg.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.4s ease;";
 
-    vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
-    vid.addEventListener("seeked", () => {
-      // Wait two paint frames so the video frame is actually rendered before fading
+    let posterRemoved = false;
+    const removePoster = () => {
+      if (posterRemoved) return;
+      posterRemoved = true;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         posterImg.style.opacity = "0";
         setTimeout(() => posterImg.remove(), 400);
       }));
-    }, { once: true });
+    };
+
+    vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
     vid.addEventListener("timeupdate", () => {
+      if (!vid.seeking && vid.currentTime >= previewStart) removePoster();
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
 
