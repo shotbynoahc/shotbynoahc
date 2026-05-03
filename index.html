@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shotbynoahc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scene">
+    <p class="centerLabel">shotbynoahc</p>
+  </div>
+
+  <!-- Info Panel (expands from the centerLabel) -->
+  <div class="info-overlay" id="infoOverlay"></div>
+  <div class="info-panel" id="infoPanel">
+    <button class="panel-close" id="panelClose">&times;</button>
+    <div class="info-content" id="infoContent">
+      <h1>About Me</h1>
+      <p class="bio">Hi, my name is Noah Cowan.<br>I created this portfolio to showcase my work in digital media and my passion for visual storytelling. I&rsquo;m currently looking for new opportunities to collaborate and contribute to creative projects.</p>
+      <div class="icon-row">
+        <a href="mailto:mediabync@gmail.com" class="icon-link" aria-label="Email">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        </a>
+        <a href="https://instagram.com/shotbynoahc" target="_blank" rel="noopener" class="icon-link" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-overlay" id="lightboxOverlay"></div>
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <video id="lightboxVideo" controls playsinline></video>
+    <img id="lightboxImage" alt="" />
+  </div>
+
+  <div class="cursor-blob" id="cursorBlob"></div>
+  <script src="script.js"></script>
+</body>
+</html>
