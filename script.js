@@ -261,12 +261,17 @@ media.forEach((item, i) => {
     vid.autoplay    = true;
     vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;opacity:0;transition:opacity 0.5s ease;";
 
+    wrapper.style.pointerEvents = "none";
+
     let videoShown = false;
     const showVideo = () => {
       if (videoShown) return;
       videoShown = true;
       vid.style.display = "block";
-      requestAnimationFrame(() => requestAnimationFrame(() => { vid.style.opacity = "1"; }));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        vid.style.opacity = "1";
+        wrapper.style.pointerEvents = "";
+      }));
     };
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
