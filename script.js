@@ -266,16 +266,14 @@ media.forEach((item, i) => {
     vid.loop        = false;
     vid.playsInline = true;
     vid.autoplay    = true;
-    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity 0.5s ease;";
+    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;";
 
     let videoShown = false;
     const showVideo = () => {
       if (videoShown) return;
       videoShown = true;
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        vid.style.opacity = "1";
-        setTimeout(() => { card.style.backgroundImage = ""; }, 500);
-      }));
+      vid.style.display = "block";
+      requestAnimationFrame(() => { card.style.backgroundImage = ""; });
     };
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
