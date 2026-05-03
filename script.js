@@ -1,6 +1,6 @@
 const media = [
   { type: "image", src: "DSC00331.JPG" },
-  { type: "video", folder: "skybox", src: "skybox1.mp4", previewStart: 3, previewEnd: 13 },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/skybox1.mp4", previewStart: 3, previewEnd: 13 },
 ];
 
 const scene         = document.querySelector(".scene");
@@ -249,7 +249,7 @@ media.forEach((item, i) => {
   card.className = "media-card";
 
   if (item.type === "video") {
-    const videoPath = `videos/${item.folder}/${item.src}`;
+    const videoPath = item.src;
     const previewStart = item.previewStart ?? 0;
     const previewEnd   = item.previewEnd   ?? null;
 
@@ -259,7 +259,7 @@ media.forEach((item, i) => {
     vid.loop        = false;
     vid.playsInline = true;
     vid.autoplay    = true;
-    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;opacity:0;transition:opacity 0.5s ease;";
+    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;";
 
     wrapper.style.pointerEvents = "none";
 
@@ -268,10 +268,7 @@ media.forEach((item, i) => {
       if (videoShown) return;
       videoShown = true;
       vid.style.display = "block";
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        vid.style.opacity = "1";
-        wrapper.style.pointerEvents = "";
-      }));
+      wrapper.style.pointerEvents = "";
     };
 
     vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });

@@ -166,6 +166,8 @@ body {
   outline: none;
   will-change: transform;
   transform-origin: center center;
+  position: relative;
+  z-index: 1;
 }
 
 .lightbox video.active,
