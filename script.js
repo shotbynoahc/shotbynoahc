@@ -254,19 +254,19 @@ media.forEach((item, i) => {
     const previewStart = item.previewStart ?? 0;
     const previewEnd   = item.previewEnd   ?? null;
 
-    // Poster sits at the bottom, always visible while video loads
-    const posterImg = document.createElement("img");
-    posterImg.src = posterPath;
-    posterImg.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;";
+    // Poster as CSS background — shows through the transparent video on all browsers
+    card.style.backgroundImage    = `url('${posterPath}')`;
+    card.style.backgroundSize     = "cover";
+    card.style.backgroundPosition = "center";
 
-    // Video starts invisible on top, fades in once confirmed playing at the right time
+    // Video starts invisible, fades in once confirmed playing at the right time
     const vid = document.createElement("video");
     vid.src         = videoPath;
     vid.muted       = true;
     vid.loop        = false;
     vid.playsInline = true;
     vid.autoplay    = true;
-    vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.5s ease;";
+    vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity 0.5s ease;";
 
     let videoShown = false;
     const showVideo = () => {
@@ -274,7 +274,7 @@ media.forEach((item, i) => {
       videoShown = true;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         vid.style.opacity = "1";
-        setTimeout(() => posterImg.remove(), 500);
+        setTimeout(() => { card.style.backgroundImage = ""; }, 500);
       }));
     };
 
@@ -284,8 +284,6 @@ media.forEach((item, i) => {
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
 
-    card.style.position = "relative";
-    card.appendChild(posterImg);
     card.appendChild(vid);
     card.addEventListener("click", () => openLightbox("video", videoPath, wrapper));
 
