@@ -1,6 +1,9 @@
 const media = [
   { type: "image", src: "DSC00331.JPG" },
+  { type: "image", src: "IMG_8538.JPEG" },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/skybox1.mp4", previewStart: 3, previewEnd: 13 },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/offline%20unagi.mp4", previewEndOffset: 3 },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/nyc%20sample.mp4" },
 ];
 
 const scene         = document.querySelector(".scene");
@@ -13,7 +16,7 @@ const infoPanel       = document.getElementById("infoPanel");
 const infoContent     = document.getElementById("infoContent");
 const infoOverlay     = document.getElementById("infoOverlay");
 
-const ORBIT_DURATION = 60000;
+const ORBIT_DURATION = 60000 / 0.85; // ~70.6s per orbit (15% slower)
 let hoveredCount  = 0;
 let lightboxOpen  = false; // pauses orbit while media is being viewed
 
@@ -250,13 +253,15 @@ media.forEach((item, i) => {
 
   if (item.type === "video") {
     const videoPath = item.src;
-    const previewStart = item.previewStart ?? 0;
-    const previewEnd   = item.previewEnd   ?? null;
+    const previewStart     = item.previewStart ?? 0;
+    let previewEnd         = item.previewEnd ?? null;
+    const previewEndOffset = item.previewEndOffset ?? null;
+    const hasPreviewWindow = item.previewEnd != null || previewEndOffset != null;
 
     const vid = document.createElement("video");
     vid.src         = videoPath;
     vid.muted       = true;
-    vid.loop        = false;
+    vid.loop        = !hasPreviewWindow;
     vid.playsInline = true;
     vid.autoplay    = true;
     vid.style.cssText = "width:100%;height:100%;object-fit:cover;display:none;";
@@ -271,7 +276,12 @@ media.forEach((item, i) => {
       wrapper.style.pointerEvents = "";
     };
 
-    vid.addEventListener("loadedmetadata", () => { vid.currentTime = previewStart; });
+    vid.addEventListener("loadedmetadata", () => {
+      if (previewEndOffset !== null && vid.duration) {
+        previewEnd = vid.duration - previewEndOffset;
+      }
+      vid.currentTime = previewStart;
+    });
     vid.addEventListener("timeupdate", () => {
       if (!vid.seeking && vid.currentTime >= previewStart) showVideo();
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
@@ -323,17 +333,26 @@ function animate(timestamp) {
   const edgePad   = 15;
   const maxXRadius = window.innerWidth  / 2 - cardHalfW - edgePad;
   const maxYRadius = window.innerHeight / 2 - cardHalfH - edgePad;
+  const driftMax   = 0.055;
+  const wobbleAmt  = 0.08;
+  const ringSpread = isMobile ? 0.06 : 0.08;
 
-  let xRadius, yRadius;
+  let oldX, oldY;
   if (isMobile) {
-    xRadius = window.innerWidth  * 0.28;
-    yRadius = window.innerHeight * 0.22;
+    oldX = window.innerWidth  * 0.28;
+    oldY = window.innerHeight * 0.22;
   } else {
-    xRadius = Math.min(window.innerWidth * 0.30, window.innerHeight * 0.34);
-    yRadius = xRadius;
+    oldX = Math.min(window.innerWidth * 0.30, window.innerHeight * 0.34);
+    oldY = oldX;
   }
-  xRadius = Math.max(Math.min(xRadius, maxXRadius), minRadius);
-  yRadius = Math.max(Math.min(yRadius, maxYRadius), minRadius);
+  oldX = Math.max(Math.min(oldX, maxXRadius), minRadius);
+  oldY = Math.max(Math.min(oldY, maxYRadius), minRadius);
+
+  const newX = Math.max(maxXRadius * 0.92, minRadius);
+  const newY = Math.max(maxYRadius * 0.92, minRadius);
+
+  let baseXRadius = (oldX + newX) / 2;
+  let baseYRadius = (oldY + newY) / 2;
 
   cards.forEach((state, i) => {
     state.speed += (targetSpeed - state.speed) * 0.035;
@@ -342,13 +361,22 @@ function animate(timestamp) {
     state.angleAccum += anglePerMs * delta * state.speed;
     state.timeAccum  += delta * state.speed;
 
-    const wobble = Math.sin(state.timeAccum * 0.00028 + i * 1.7);
-    const drift  = Math.sin(state.timeAccum * 0.00051 + i * 2.4);
-    const xR = Math.min(Math.max(xRadius + wobble * xRadius * 0.10, minRadius), maxXRadius);
-    const yR = Math.min(Math.max(yRadius + wobble * yRadius * 0.10, minRadius), maxYRadius);
+    const ringT = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+    const ringFactor = 1 - ringSpread / 2 + ringT * ringSpread;
+
+    const wobble = Math.sin(state.timeAccum * 0.000238 + i * 1.7);
+    const drift  = Math.sin(state.timeAccum * 0.0004335 + i * 2.4);
+    const xR = Math.min(
+      Math.max(baseXRadius * ringFactor + wobble * baseXRadius * ringFactor * wobbleAmt, minRadius),
+      maxXRadius
+    );
+    const yR = Math.min(
+      Math.max(baseYRadius * ringFactor + wobble * baseYRadius * ringFactor * wobbleAmt, minRadius),
+      maxYRadius - baseYRadius * ringFactor * driftMax
+    );
 
     state.x = Math.cos(state.angleAccum) * xR;
-    state.y = Math.sin(state.angleAccum) * yR + drift * yRadius * 0.07;
+    state.y = Math.sin(state.angleAccum) * yR + drift * yR * driftMax;
 
     state.wrapper.style.transform =
       `translate(calc(-50% + ${state.x}px), calc(-50% + ${state.y}px))`;

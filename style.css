@@ -292,8 +292,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.75rem;
+  gap: 3rem;
   margin-top: 0.25rem;
+}
+
+.headshot {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .icon-link {
