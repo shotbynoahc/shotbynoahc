@@ -4,7 +4,7 @@ const media = [
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/skybox1.mp4", previewStart: 3, previewEnd: 13 },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/offline%20unagi.mp4", previewEndOffset: 3 },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/nyc%20sample.mp4" },
-  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/noah%20motion%20logo.mp4" },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/noah%20motion%20logo%201.mp4" },
 ];
 
 const scene         = document.querySelector(".scene");
