@@ -207,6 +207,8 @@ body {
   opacity: 1;
   pointer-events: auto;
   cursor: pointer;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .info-panel {
@@ -216,6 +218,7 @@ body {
   display: none;
   z-index: 60;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 .info-panel.active {
   display: block;
@@ -252,19 +255,29 @@ body {
   opacity: 0;
   transition: opacity 0.2s ease;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  html:has(.info-panel.active),
+  body:has(.info-panel.active) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   .info-content {
-    padding: 2.25rem 1.5rem;
-    gap: 0.9rem;
+    padding: 2.25rem 1.25rem 1.75rem;
+    gap: 0.65rem;
+    justify-content: center;
   }
+
   .info-content h1 {
-    font-size: 1.55rem;
+    font-size: 1.35rem;
   }
+
   .info-content .bio {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
+    line-height: 1.55;
     max-width: 100%;
   }
 }
@@ -316,4 +329,21 @@ body {
 .icon-link:hover {
   transform: translateY(-3px);
   color: #555;
+}
+
+@media (max-width: 768px) {
+  .icon-row {
+    gap: 1.75rem;
+    margin-top: 0;
+  }
+
+  .headshot {
+    width: 100px;
+    height: 100px;
+  }
+
+  .icon-link svg {
+    width: 26px;
+    height: 26px;
+  }
 }

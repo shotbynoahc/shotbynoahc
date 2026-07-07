@@ -4,6 +4,7 @@ const media = [
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/skybox1.mp4", previewStart: 3, previewEnd: 13 },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/offline%20unagi.mp4", previewEndOffset: 3 },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/nyc%20sample.mp4" },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/noah%20motion%20logo.mp4" },
 ];
 
 const scene         = document.querySelector(".scene");
@@ -406,17 +407,33 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLight
 
 // ---------- Info panel (centerLabel expands into an "About" card) ----------
 
+function lockPageScroll() {
+  if (window.innerWidth > 768) return;
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+}
+
+function unlockPageScroll() {
+  if (window.innerWidth > 768) return;
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
+}
+
 function openInfoPanel() {
   if (panelOpen) return;
   panelOpen = true;
+  lockPageScroll();
 
   clearTimeout(panelRestoreTimeout);
   panelRestoreTimeout = null;
 
   const labelRect = label.getBoundingClientRect();
 
-  const finalW = Math.min(window.innerWidth * 0.82, 480);
-  const finalH = finalW;
+  const isMobile  = window.innerWidth <= 768;
+  const finalW    = Math.min(window.innerWidth * (isMobile ? 0.9 : 0.82), 480);
+  const finalH    = isMobile
+    ? Math.min(Math.max(finalW * 1.25, finalW + 84), window.innerHeight * 0.88)
+    : finalW;
   const finalLeft = (window.innerWidth  - finalW) / 2;
   const finalTop  = (window.innerHeight - finalH) / 2;
 
@@ -467,6 +484,7 @@ function openInfoPanel() {
 function closeInfoPanel() {
   if (!panelOpen) return;
   panelOpen = false;
+  unlockPageScroll();
 
   clearTimeout(panelRestoreTimeout);
   panelRestoreTimeout = null;
