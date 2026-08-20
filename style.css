@@ -103,7 +103,8 @@ body {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  background: #fff;
+  background: #f4f4f4;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 

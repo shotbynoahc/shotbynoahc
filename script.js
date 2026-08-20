@@ -5,6 +5,7 @@ const media = [
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/offline%20unagi.mp4", previewEndOffset: 3 },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/nyc%20sample.mp4" },
   { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/noah%20motion%20logo%201.mp4" },
+  { type: "video", src: "https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/monkey.mp4" },
 ];
 
 const scene         = document.querySelector(".scene");
@@ -283,8 +284,14 @@ media.forEach((item, i) => {
       }
       vid.currentTime = previewStart;
     });
+    vid.addEventListener("loadeddata", () => {
+      if (!hasPreviewWindow) showVideo();
+    });
+    vid.addEventListener("canplay", () => {
+      if (!hasPreviewWindow) showVideo();
+    });
     vid.addEventListener("timeupdate", () => {
-      if (!vid.seeking && vid.currentTime >= previewStart) showVideo();
+      if (hasPreviewWindow && !vid.seeking && vid.currentTime >= previewStart) showVideo();
       if (previewEnd !== null && vid.currentTime >= previewEnd) vid.currentTime = previewStart;
     });
 
