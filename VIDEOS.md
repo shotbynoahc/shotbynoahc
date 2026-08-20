@@ -19,3 +19,8 @@
 - File: noah motion logo 1.mp4
 - R2 URL: https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/noah%20motion%20logo%201.mp4
 - Preview: full video (loops)
+
+## Monkey
+- File: monkey.mp4
+- R2 URL: https://pub-f4efca3819cf426cbe600154c2454832.r2.dev/monkey.mp4
+- Preview: full video (loops)
